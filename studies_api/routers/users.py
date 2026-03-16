@@ -110,10 +110,30 @@ async def update_user(user_id: int, user_update: UserUpdateSchema, db: AsyncSess
     update_data = user_update.model_dump(exclude_unset=True)
 
     if 'username' in update_data and update_data['username'] != user.username:
-        pass
+        username_exists = await db.scalar(
+            select(exists().where(
+                (User.username == update_data['username']) &
+                (User.id != user_id)
+            ))
+        )
+        if username_exists:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Username already taken',
+            )
 
     if 'email' in update_data and update_data['email'] != user.email:
-        pass
+        email_exists = await db.scalar(
+            select(exists().where(
+                (User.email == update_data['email']) &
+                (User.id != user_id)
+            ))
+        )
+        if email_exists:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Email already taken',
+            )
 
     if 'password' in update_data and update_data['password'] != user.password:
         update_data['password'] = get_password_hash(update_data['password'])

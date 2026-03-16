@@ -7,8 +7,8 @@ from studies_api.schemas.study_sessions import (
     StudySessionListPublicSchema,
     StudySessionSchema,
     StudySessionPublicSchema,
+    StudySessionUpdateSchema
 )
-from studies_api.db import SESSIONS
 from studies_api.models.sessions import Session
 from studies_api.core.database import get_connection
 
@@ -51,7 +51,7 @@ async def list_sessions(
     query = select(Session)
 
     if search:
-        search_filter = '%{search}%'
+        search_filter = f'%{search}%'
         query = query.where(
             (Session.topic.ilike(search_filter))
         )
@@ -68,6 +68,23 @@ async def list_sessions(
         'limit': limit,
     }
 
+@router.get(
+    path="/study-session/{session_id}", 
+    status_code=status.HTTP_200_OK,
+    response_model=StudySessionPublicSchema,
+    summary="Search Study Session by ID"
+    )
+async def get_session(session_id: int, db: AsyncSession = Depends(get_connection)):
+    study_session = await db.get(Session, session_id)
+
+    if not study_session:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Study Session Not Found",
+            )
+
+    return study_session
+
 
 @router.put(
     path='/study-session/{session_id}',
@@ -75,10 +92,16 @@ async def list_sessions(
     response_model=StudySessionPublicSchema,
     summary='Update Study Session'
 )
-async def update_session(session_id: int, session: StudySessionSchema):
-    session_with_id = StudySessionPublicSchema(**session.model_dump(), id=session_id)
-    SESSIONS[session_id - 1] = session_with_id
-    return session_with_id
+async def update_session(session_id: int, session_update: StudySessionUpdateSchema, db: AsyncSession = Depends(get_connection)):
+    session = await db.get(Session, session_id)
+
+    if not session:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Study Session Not Found'
+        )
+    
+    
 
 
 @router.delete(path='/study-session/{session_id}', status_code=status.HTTP_204_NO_CONTENT)

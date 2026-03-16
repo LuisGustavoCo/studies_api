@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
 
 
@@ -12,6 +12,8 @@ class StudySessionSchema(BaseModel):
 
 # O que devolverei após usuário criar
 class StudySessionPublicSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
     id: int
     topic: str
     duration_minutes: int
