@@ -20,7 +20,7 @@ router = APIRouter()
 
 
 @router.post(
-    path='/study-session',
+    path='/session',
     status_code=status.HTTP_201_CREATED,
     response_model=StudySessionPublicSchema,
     summary='Create new Study Session',
@@ -35,7 +35,7 @@ async def create_session(
         duration_minutes=session.duration_minutes,
         notes=session.notes,
         date=session.date,
-        user_id=session.user_id,
+        user_id=current_user.id,
     )
 
     db.add(db_session)
@@ -46,7 +46,7 @@ async def create_session(
 
 
 @router.get(
-    path='/study-session',
+    path='/sessions',
     status_code=status.HTTP_200_OK,
     response_model=StudySessionListPublicSchema,
     summary='List all Study Sessions'
@@ -56,8 +56,10 @@ async def list_sessions(
     limit: int = Query(100, ge=1, le=100, description='Limit of registers'),
     search: Optional[str] = Query(None, description='Search by Topic'),
     current_user: User = Depends(get_current_user),
-    db: AsyncSession = Depends(get_connection)):
-    query = select(Session)
+    db: AsyncSession = Depends(get_connection)
+    ):
+    
+    query = select(Session).where(Session.user_id == current_user.id)
 
     if search:
         search_filter = f'%{search}%'
@@ -69,16 +71,17 @@ async def list_sessions(
 
     result = await db.execute(query)
 
-    sessions = result.scalars().all()
+    study_sessions = result.scalars().all()
 
     return {
-        'sessions': sessions,
+        'sessions': study_sessions,
         'offset': offset,
         'limit': limit,
     }
 
+
 @router.get(
-    path="/study-session/{session_id}", 
+    path="/sessions/{session_id}", 
     status_code=status.HTTP_200_OK,
     response_model=StudySessionPublicSchema,
     summary="Search Study Session by ID",
@@ -105,7 +108,7 @@ async def get_session(
 
 
 @router.put(
-    path='/study-session/{session_id}',
+    path='/sessions/{session_id}',
     status_code=status.HTTP_200_OK,
     response_model=StudySessionPublicSchema,
     summary='Update Study Session'
@@ -138,7 +141,7 @@ async def update_session(
     
     
 
-@router.delete(path='/study-session/{session_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(path='/sessions/{session_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_session(
     session_id: int, 
     db: AsyncSession = Depends(get_connection),

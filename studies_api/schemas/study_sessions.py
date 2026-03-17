@@ -7,8 +7,8 @@ class StudySessionSchema(BaseModel):
     duration_minutes: int
     notes: Optional[str]
     date: str
-    user_id: int
-
+    
+    
 
 # O que devolverei após usuário criar
 class StudySessionPublicSchema(BaseModel):
@@ -20,6 +20,7 @@ class StudySessionPublicSchema(BaseModel):
     notes: Optional[str]
     date: str
     user_id: int
+
 
 
 class StudySessionUpdateSchema(BaseModel):

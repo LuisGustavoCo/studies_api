@@ -1,39 +1,51 @@
 from fastapi import APIRouter, status, Depends
-from sqlalchemy import func
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from studies_api.db import SESSIONS
+from studies_api.models.users import User
+from studies_api.models.sessions import Session
 from studies_api.core.database import get_connection
+from studies_api.core.security import get_current_user
 from studies_api.schemas.stats import StudySessionsStats
 
 
 router = APIRouter()
 
 
-@router.get(path='/stats', status_code=status.HTTP_200_OK, response_model=StudySessionsStats, summary='Get Stats')
-async def get_stats(user_id: int, db: AsyncSession = Depends(get_connection)):
-    total_sessions = db.query(func.count(StudySessionsStats.id))
-    total_minutes = 0
-    topics_count = {}
-    for session in SESSIONS:
-        total_minutes += session.duration_minutes
-        topic = session.topic
+@router.get(path='/', status_code=status.HTTP_200_OK, response_model=StudySessionsStats, summary='Get Stats')
+async def get_stats(
+                db: AsyncSession = Depends(get_connection), 
+                current_user: User = Depends(get_current_user)
+    ):
+    # Query de total_sessions
+    query = select(func.count(Session.id)).where(
+        Session.user_id == current_user.id
+    )
 
-        if topic not in topics_count:
-            topics_count[topic] = 1
-        else:
-            topics_count[topic] += 1
+    result = await db.execute(query)
+    total_sessions = result.scalar()
 
-    most_studied_topic = None
-    max_count = 0
+    # Query de total_minutes
+    query = select(func.sum(Session.duration_minutes)).where(
+    Session.user_id == current_user.id
+)
+    
+    result = await db.execute(query)
+    total_minutes = result.scalar()
 
-    for topic, count in topics_count.items():
-        if count > max_count:
-            max_count = count
-            most_studied_topic = topic
+    # Query de most_studied_topic
+    query = (
+    select(Session.topic)
+    .where(Session.user_id == current_user.id)
+    .group_by(Session.topic)
+    .order_by(func.count(Session.topic).desc())
+)
 
+    result = await db.execute(query)
+    most_studied_topic = result.scalars().first()
+    
     return {
         'total_sessions': total_sessions,
         'total_minutes': total_minutes,
-        'most_studied_topic': most_studied_topic,
+        'most_studied_topic': most_studied_topic
     }
