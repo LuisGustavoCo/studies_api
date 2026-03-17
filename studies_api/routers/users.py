@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, exists
 
 from studies_api.schemas.users import UserSchema, UserPublicSchema, UserListPublicSchema, UserUpdateSchema
-from studies_api.core.security import verify_password, get_password_hash
+from studies_api.core.security import verify_password, get_password_hash, get_current_user
 from studies_api.models.users import User
 from studies_api.core.database import get_connection
 
@@ -96,9 +96,14 @@ async def get_user(user_id: int, db: AsyncSession = Depends(get_connection)):
         path="/{user_id}", 
         status_code=status.HTTP_201_CREATED,
         response_model=UserPublicSchema,
-        summary='Update user',
+        summary='Update User',
         )
-async def update_user(user_id: int, user_update: UserUpdateSchema, db: AsyncSession = Depends(get_connection)):
+async def update_user(
+    user_id: int,
+    user_update: UserUpdateSchema, 
+    db: AsyncSession = Depends(get_connection),
+    current_user: User = Depends(get_current_user),
+    ):
     user = await db.get(User, user_id)
 
     if not user:
@@ -148,7 +153,11 @@ async def update_user(user_id: int, user_update: UserUpdateSchema, db: AsyncSess
 
 
 @router.delete(path='/{user_id}', status_code=status.HTTP_204_NO_CONTENT, summary='Delete User')
-async def delete_user(user_id: int, db: AsyncSession = Depends(get_connection)):
+async def delete_user(
+    user_id: int,
+    db: AsyncSession = Depends(get_connection),
+    current_user: User = Depends(get_current_user),
+    ):
     user = await db.get(User, user_id)
 
     if not user:

@@ -112,8 +112,8 @@ async def get_current_user(
     return user
 
 
-def verify_study_session_ownership(user: User, study_session_id: int) -> None:
-    if user.id != study_session_id:
+def verify_study_session_ownership(study_session, current_user) :
+    if study_session.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Do not have permissions to access this study session',
