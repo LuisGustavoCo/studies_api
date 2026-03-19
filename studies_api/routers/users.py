@@ -1,13 +1,18 @@
-from fastapi import APIRouter, status, Depends, HTTPException, Query
 from typing import Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy import exists, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, exists
 
-from studies_api.schemas.users import UserSchema, UserPublicSchema, UserListPublicSchema, UserUpdateSchema
-from studies_api.core.security import verify_password, get_password_hash, get_current_user
-from studies_api.models.users import User
 from studies_api.core.database import get_connection
-
+from studies_api.core.security import get_current_user, get_password_hash
+from studies_api.models.users import User
+from studies_api.schemas.users import (
+    UserListPublicSchema,
+    UserPublicSchema,
+    UserSchema,
+    UserUpdateSchema,
+)
 
 router = APIRouter()
 
@@ -50,18 +55,17 @@ async def create_user(user: UserSchema, db: AsyncSession = Depends(get_connectio
     summary='Search Users',
 )
 async def list_users(
-    offset: int = Query(0, ge=0, description="Number of registers to skip"),
-    limit: int = Query(100, ge=1, le=100, description="Limit of registers"),
+    offset: int = Query(0, ge=0, description='Number of registers to skip'),
+    limit: int = Query(100, ge=1, le=100, description='Limit of registers'),
     search: Optional[str] = Query(None, description='Search by username or email'),
     db: AsyncSession = Depends(get_connection),
-    ):
+):
     query = select(User)
 
     if search:
         search_filter = f'%{search}%'
         query = query.where(
-            (User.username.ilike(search_filter))
-            | (User.email.ilike(search_filter))
+            (User.username.ilike(search_filter)) | (User.email.ilike(search_filter))
         )
 
     query = query.offset(offset).limit(limit)
@@ -74,7 +78,7 @@ async def list_users(
         'users': users,
         'offset': offset,
         'limit': limit,
-        }
+    }
 
 
 @router.get(
@@ -93,17 +97,17 @@ async def get_user(user_id: int, db: AsyncSession = Depends(get_connection)):
 
 
 @router.put(
-        path="/{user_id}", 
-        status_code=status.HTTP_201_CREATED,
-        response_model=UserPublicSchema,
-        summary='Update User',
-        )
+    path='/{user_id}',
+    status_code=status.HTTP_201_CREATED,
+    response_model=UserPublicSchema,
+    summary='Update User',
+)
 async def update_user(
     user_id: int,
-    user_update: UserUpdateSchema, 
+    user_update: UserUpdateSchema,
     db: AsyncSession = Depends(get_connection),
     current_user: User = Depends(get_current_user),
-    ):
+):
     user = await db.get(User, user_id)
 
     if not user:
@@ -111,15 +115,14 @@ async def update_user(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='User Not Found',
         )
-    
+
     update_data = user_update.model_dump(exclude_unset=True)
 
     if 'username' in update_data and update_data['username'] != user.username:
         username_exists = await db.scalar(
-            select(exists().where(
-                (User.username == update_data['username']) &
-                (User.id != user_id)
-            ))
+            select(
+                exists().where((User.username == update_data['username']) & (User.id != user_id))
+            )
         )
         if username_exists:
             raise HTTPException(
@@ -129,10 +132,7 @@ async def update_user(
 
     if 'email' in update_data and update_data['email'] != user.email:
         email_exists = await db.scalar(
-            select(exists().where(
-                (User.email == update_data['email']) &
-                (User.id != user_id)
-            ))
+            select(exists().where((User.email == update_data['email']) & (User.id != user_id)))
         )
         if email_exists:
             raise HTTPException(
@@ -157,7 +157,7 @@ async def delete_user(
     user_id: int,
     db: AsyncSession = Depends(get_connection),
     current_user: User = Depends(get_current_user),
-    ):
+):
     user = await db.get(User, user_id)
 
     if not user:
@@ -165,8 +165,3 @@ async def delete_user(
 
     await db.delete(user)
     await db.commit()
-
-    return
-
-
-

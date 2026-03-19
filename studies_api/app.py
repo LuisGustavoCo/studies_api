@@ -1,7 +1,8 @@
 from fastapi import FastAPI, status
-from studies_api.routers import study_sessions, stats, users, auth
 
-app = FastAPI(title="StudiesAPI")
+from studies_api.routers import auth, stats, study_sessions, users
+
+app = FastAPI(title='StudiesAPI')
 
 
 app.include_router(
@@ -27,6 +28,7 @@ app.include_router(
     prefix='/api/v1/stats',
     tags=['Stats'],
 )
+
 
 @app.get('/health_check', status_code=status.HTTP_200_OK, tags=['Health Check'])
 def health_check():

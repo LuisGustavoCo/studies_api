@@ -1,11 +1,11 @@
+from datetime import datetime
+from typing import TYPE_CHECKING, List
+
 from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import List, TYPE_CHECKING
-from datetime import datetime
 
 from studies_api.models.base import Base
 from studies_api.models.sessions import Session
-
 
 if TYPE_CHECKING:  # Isso só roda para o Autocomplete, não no runtime
     from .sessions import Session

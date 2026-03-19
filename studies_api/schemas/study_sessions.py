@@ -1,5 +1,6 @@
+from typing import List, Optional
+
 from pydantic import BaseModel, ConfigDict
-from typing import Optional, List
 
 
 class StudySessionSchema(BaseModel):
@@ -7,20 +8,18 @@ class StudySessionSchema(BaseModel):
     duration_minutes: int
     notes: Optional[str]
     date: str
-    
-    
+
 
 # O que devolverei após usuário criar
 class StudySessionPublicSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    
+
     id: int
     topic: str
     duration_minutes: int
     notes: Optional[str]
     date: str
     user_id: int
-
 
 
 class StudySessionUpdateSchema(BaseModel):

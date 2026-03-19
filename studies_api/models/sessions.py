@@ -1,7 +1,8 @@
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import func, Text, ForeignKey
 from datetime import datetime
 from typing import TYPE_CHECKING
+
+from sqlalchemy import ForeignKey, Text, func
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from studies_api.models.base import Base
 
