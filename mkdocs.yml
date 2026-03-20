@@ -1,0 +1,87 @@
+site_name: StudiesAPI - Documentação
+site_description: Documentação completa da StudiesAPI - API para gerenciamento de sessões de estudo
+site_author: Luis Gustavo
+site_url: https://github.com/LuisGustavoCo/studies_api
+
+repo_name: LuisGustavoCo/studies_api
+repo_url: https://github.com/LuisGustavoCo/studies_api
+
+theme:
+  name: material
+  language: pt-BR
+  palette:
+    primary: green
+    accent: green
+  font:
+    text: Roboto
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - offline
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Visão Geral: overview.md
+  - Getting Started:
+    - Pré-requisitos: prerequisites.md
+    - Instalação: installation.md
+    - Configuração: configuration.md
+  - Projeto:
+    - Guidelines: guidelines.md
+    - Estrutura: structure.md
+    - API Endpoints: api-endpoints.md
+    - Modelagem: data-modeling.md
+    - Segurança: security.md
+  - Desenvolvimento:
+    - Desenvolvimento: development.md
+    - Testes: testing.md
+    - Deploy: deploy.md
+  - Contribuição:
+    - Como Contribuir: contributing.md
+    - Release Notes: release-notes.md
+
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/LuisGustavoCo/studies_api
+      name: StudiesAPI no GitHub
+
+copyright: |
+  &copy; 2026 Luis Gustavo - StudiesAPI
