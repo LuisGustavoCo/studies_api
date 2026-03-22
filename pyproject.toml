@@ -68,6 +68,7 @@ exclude = [
     "venv",
     "alembic",
     "migrations",
+    "tests"
 ]
 
 
