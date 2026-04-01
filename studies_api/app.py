@@ -1,8 +1,25 @@
 from fastapi import FastAPI, status
+from fastapi.middleware.cors import CORSMiddleware
 
 from studies_api.routers import auth, stats, study_sessions, users
 
 app = FastAPI(title='StudiesAPI')
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'http://localhost:5500',
+        'http://127.0.0.1:5500',
+        'http://localhost:5173',
+        'http://127.0.0.1:5173',
+        'null',  # para file:// protocol durante desenvolvimento
+    ],
+    allow_credentials=True,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
 
 
 app.include_router(

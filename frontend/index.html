@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudiesAPI — Painel de Estudos</title>
+  <meta name="description" content="Gerencie suas sessões de estudo, acompanhe métricas e evolua seu aprendizado com a StudiesAPI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       AUTH SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-bg-gradient"></div>
+    <div class="auth-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
+    <div class="auth-card" id="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </div>
+        <span class="auth-logo-text">StudiesAPI</span>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="login-form-wrapper" class="form-wrapper active">
+        <h1 class="auth-title">Bem-vindo de volta</h1>
+        <p class="auth-subtitle">Acesse sua conta para continuar estudando</p>
+
+        <form id="login-form" class="auth-form" novalidate>
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+              <input
+                type="email"
+                id="login-email"
+                name="email"
+                placeholder="seu@email.com"
+                autocomplete="email"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">Senha</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              <input
+                type="password"
+                id="login-password"
+                name="password"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                required
+              />
+              <button type="button" class="toggle-password" data-target="login-password" aria-label="Mostrar senha">
+                <svg class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div id="login-error" class="form-error hidden"></div>
+
+          <button type="submit" id="login-btn" class="btn btn-primary btn-full">
+            <span class="btn-text">Entrar</span>
+            <span class="btn-spinner hidden"></span>
+          </button>
+        </form>
+
+        <p class="auth-switch">
+          Não tem conta?
+          <button class="link-btn" id="go-to-register">Cadastre-se</button>
+        </p>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="register-form-wrapper" class="form-wrapper">
+        <h1 class="auth-title">Criar conta</h1>
+        <p class="auth-subtitle">Comece a rastrear seu progresso hoje</p>
+
+        <form id="register-form" class="auth-form" novalidate>
+          <div class="form-group">
+            <label for="reg-username">Usuário</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </span>
+              <input
+                type="text"
+                id="reg-username"
+                name="username"
+                placeholder="mínimo 6 caracteres"
+                minlength="6"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-email">Email</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </span>
+              <input
+                type="email"
+                id="reg-email"
+                name="email"
+                placeholder="seu@email.com"
+                autocomplete="email"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-password">Senha</label>
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              <input
+                type="password"
+                id="reg-password"
+                name="password"
+                placeholder="mínimo 8 caracteres"
+                minlength="8"
+                required
+              />
+              <button type="button" class="toggle-password" data-target="reg-password" aria-label="Mostrar senha">
+                <svg class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div id="register-error" class="form-error hidden"></div>
+          <div id="register-success" class="form-success hidden"></div>
+
+          <button type="submit" id="register-btn" class="btn btn-primary btn-full">
+            <span class="btn-text">Criar conta</span>
+            <span class="btn-spinner hidden"></span>
+          </button>
+        </form>
+
+        <p class="auth-switch">
+          Já tem conta?
+          <button class="link-btn" id="go-to-login">Faça login</button>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       APP SCREEN (after login)
+  ═══════════════════════════════════════════ -->
+  <div id="app-screen" class="app-screen hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="sidebar-logo-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+          <span>StudiesAPI</span>
+        </div>
+        <button class="sidebar-close" id="sidebar-close" aria-label="Fechar menu">×</button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="dashboard" id="nav-dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </button>
+        <button class="nav-item" data-view="sessions" id="nav-sessions">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Sessões
+        </button>
+        <button class="nav-item" data-view="profile" id="nav-profile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Perfil
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info" id="sidebar-user-info">
+          <div class="user-avatar" id="sidebar-avatar">U</div>
+          <div class="user-details">
+            <span class="user-name" id="sidebar-username">Usuário</span>
+            <span class="user-email" id="sidebar-email">email@email.com</span>
+          </div>
+        </div>
+        <button class="btn-logout" id="logout-btn" title="Sair">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- OVERLAY for mobile sidebar -->
+    <div class="sidebar-overlay hidden" id="sidebar-overlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- TOP BAR -->
+      <header class="topbar">
+        <button class="topbar-menu-btn" id="sidebar-toggle" aria-label="Abrir menu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary btn-sm" id="topbar-new-session-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nova sessão
+          </button>
+        </div>
+      </header>
+
+      <!-- ── DASHBOARD VIEW ── -->
+      <section id="view-dashboard" class="view active">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Dashboard</h2>
+            <p class="view-subtitle">Acompanhe seu progresso de estudos</p>
+          </div>
+        </div>
+
+        <!-- STATS CARDS -->
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card stat-card--sessions loading-card" id="stat-sessions">
+            <div class="stat-card-icon stat-icon-blue">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <div class="stat-card-content">
+              <span class="stat-label">Total de Sessões</span>
+              <span class="stat-value" id="stat-total-sessions">—</span>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card--time loading-card" id="stat-time">
+            <div class="stat-card-icon stat-icon-purple">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="stat-card-content">
+              <span class="stat-label">Minutos Estudados</span>
+              <span class="stat-value" id="stat-total-minutes">—</span>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card--topic loading-card" id="stat-topic">
+            <div class="stat-card-icon stat-icon-emerald">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div class="stat-card-content">
+              <span class="stat-label">Tópico Mais Estudado</span>
+              <span class="stat-value stat-value--sm" id="stat-top-topic">—</span>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card--hours loading-card" id="stat-hours">
+            <div class="stat-card-icon stat-icon-amber">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="stat-card-content">
+              <span class="stat-label">Horas Estudadas</span>
+              <span class="stat-value" id="stat-total-hours">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT SESSIONS -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <h3 class="section-card-title">Sessões Recentes</h3>
+            <button class="btn btn-ghost btn-sm" id="view-all-sessions-btn">Ver todas</button>
+          </div>
+          <div id="recent-sessions-wrapper">
+            <div class="table-wrapper">
+              <table class="data-table" id="recent-sessions-table">
+                <thead>
+                  <tr>
+                    <th>Tópico</th>
+                    <th>Duração</th>
+                    <th>Data</th>
+                    <th>Notas</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-sessions-body">
+                  <tr><td colspan="4" class="table-empty">Carregando...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- BAR CHART -->
+        <div class="section-card">
+          <div class="section-card-header">
+            <h3 class="section-card-title">Distribuição por Tópico</h3>
+          </div>
+          <div id="topic-chart" class="topic-chart"></div>
+        </div>
+      </section>
+
+      <!-- ── SESSIONS VIEW ── -->
+      <section id="view-sessions" class="view">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Sessões de Estudo</h2>
+            <p class="view-subtitle">Gerencie todos os seus registros</p>
+          </div>
+          <button class="btn btn-primary" id="new-session-btn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nova Sessão
+          </button>
+        </div>
+
+        <div class="section-card">
+          <div class="search-bar-wrapper">
+            <div class="input-wrapper search-input-wrapper">
+              <span class="input-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </span>
+              <input type="text" id="session-search" placeholder="Buscar por tópico..." />
+            </div>
+            <button class="btn btn-ghost btn-sm" id="session-search-btn">Buscar</button>
+            <button class="btn btn-ghost btn-sm" id="session-clear-btn">Limpar</button>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="data-table" id="sessions-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Tópico</th>
+                  <th>Duração</th>
+                  <th>Data</th>
+                  <th>Notas</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="sessions-body">
+                <tr><td colspan="6" class="table-empty">Carregando sessões...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination" id="sessions-pagination">
+            <button class="btn btn-ghost btn-sm" id="prev-page-btn" disabled>← Anterior</button>
+            <span class="pagination-info" id="pagination-info">Página 1</span>
+            <button class="btn btn-ghost btn-sm" id="next-page-btn">Próximo →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── PROFILE VIEW ── -->
+      <section id="view-profile" class="view">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Perfil</h2>
+            <p class="view-subtitle">Gerencie seus dados pessoais</p>
+          </div>
+        </div>
+
+        <div class="profile-grid">
+          <div class="section-card profile-card">
+            <div class="profile-avatar-section">
+              <div class="profile-avatar-big" id="profile-avatar-big">U</div>
+              <div>
+                <h3 class="profile-name" id="profile-name">Usuário</h3>
+                <p class="profile-email-display" id="profile-email-display">email@email.com</p>
+                <span class="profile-badge">Conta ativa</span>
+              </div>
+            </div>
+
+            <form id="update-profile-form" class="auth-form profile-form" novalidate>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="upd-username">Usuário</label>
+                  <div class="input-wrapper">
+                    <input type="text" id="upd-username" placeholder="Novo username" minlength="6" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="upd-email">Email</label>
+                  <div class="input-wrapper">
+                    <input type="email" id="upd-email" placeholder="Novo email" />
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="upd-password">Nova Senha</label>
+                <div class="input-wrapper">
+                  <input type="password" id="upd-password" placeholder="Deixe em branco para manter" minlength="8" />
+                  <button type="button" class="toggle-password" data-target="upd-password" aria-label="Mostrar senha">
+                    <svg class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div id="profile-update-error" class="form-error hidden"></div>
+              <div id="profile-update-success" class="form-success hidden"></div>
+
+              <div class="form-actions">
+                <button type="submit" id="update-profile-btn" class="btn btn-primary">
+                  <span class="btn-text">Salvar alterações</span>
+                  <span class="btn-spinner hidden"></span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="section-card danger-card">
+            <h3 class="section-card-title danger-title">Zona de Perigo</h3>
+            <p class="danger-desc">Esta ação é <strong>irreversível</strong>. Todos os seus dados e sessões serão apagados permanentemente.</p>
+            <button class="btn btn-danger" id="delete-account-btn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              Excluir minha conta
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MODALS
+  ═══════════════════════════════════════════ -->
+
+  <!-- Session Modal (create / edit) -->
+  <div class="modal-overlay hidden" id="session-modal-overlay">
+    <div class="modal" id="session-modal" role="dialog" aria-modal="true" aria-labelledby="session-modal-title">
+      <div class="modal-header">
+        <h3 class="modal-title" id="session-modal-title">Nova Sessão</h3>
+        <button class="modal-close" id="session-modal-close" aria-label="Fechar">×</button>
+      </div>
+      <form id="session-form" novalidate>
+        <div class="modal-body">
+
+          <div class="form-group">
+            <label for="s-topic">Tópico <span class="required">*</span></label>
+            <div class="input-wrapper">
+              <input type="text" id="s-topic" placeholder="Ex: Python, Matemática, Inglês..." required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="s-duration">Duração (minutos) <span class="required">*</span></label>
+              <div class="input-wrapper">
+                <input type="number" id="s-duration" placeholder="60" min="1" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="s-date">Data <span class="required">*</span></label>
+              <div class="input-wrapper">
+                <input type="date" id="s-date" required />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="s-notes">Notas <span class="optional">(máx. 120 caracteres)</span></label>
+            <div class="input-wrapper">
+              <textarea id="s-notes" placeholder="O que você aprendeu hoje?" maxlength="120" rows="3"></textarea>
+            </div>
+            <span class="char-counter" id="notes-counter">0/120</span>
+          </div>
+
+          <div id="session-form-error" class="form-error hidden"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="session-modal-cancel">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="session-form-submit">
+            <span class="btn-text">Salvar</span>
+            <span class="btn-spinner hidden"></span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div class="modal-overlay hidden" id="confirm-modal-overlay">
+    <div class="modal modal-sm" id="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+      <div class="modal-header">
+        <h3 class="modal-title" id="confirm-modal-title">Confirmar exclusão</h3>
+        <button class="modal-close" id="confirm-modal-close" aria-label="Fechar">×</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-modal-message">Tem certeza que deseja excluir este item?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" id="confirm-cancel-btn">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="confirm-ok-btn">
+          <span class="btn-text">Excluir</span>
+          <span class="btn-spinner hidden"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
